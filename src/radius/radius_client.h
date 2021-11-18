@@ -9,6 +9,7 @@
 #ifndef RADIUS_CLIENT_H
 #define RADIUS_CLIENT_H
 
+#include <netdb.h>
 #include "ip_addr.h"
 
 struct radius_msg;
@@ -29,6 +30,8 @@ struct hostapd_radius_server {
 	 * addr - radiusAuthServerAddress or radiusAccServerAddress
 	 */
 	struct hostapd_ip_addr addr;
+	char fqdn_addr[NI_MAXHOST];
+	int resolved;
 
 	/**
 	 * port - radiusAuthClientServerPortNumber or radiusAccClientServerPortNumber

@@ -24,6 +24,7 @@
 #include "ap/wpa_auth.h"
 #include "ap/ap_config.h"
 #include "config_file.h"
+#include "ip_addr.h"
 
 
 #ifndef CONFIG_NO_VLAN
@@ -581,6 +582,21 @@ static int hostapd_config_read_eap_user(const char *fname,
 
 
 #ifndef CONFIG_NO_RADIUS
+
+static int radius_parse_fqdn(const char *fqdn,
+			     struct hostapd_radius_server *nserv)
+{
+	size_t len = strnlen(fqdn, NI_MAXHOST);
+
+	if (len < 1)
+		return -1;
+
+	strncpy(nserv->fqdn_addr, fqdn, len);
+	nserv->fqdn_addr[len + 1] = '\0';
+
+	return 1;
+}
+
 static int
 hostapd_config_read_radius_addr(struct hostapd_radius_server **server,
 				int *num_server, const char *val, int def_port,
@@ -602,7 +618,20 @@ hostapd_config_read_radius_addr(struct hostapd_radius_server **server,
 	os_memset(nserv, 0, sizeof(*nserv));
 	nserv->port = def_port;
 	ret = hostapd_parse_ip_addr(val, &nserv->addr);
-	nserv->index = server_index++;
+
+	/* RADIUS address is not a valid IP address, see if it's a FQDN */
+	if (ret) {
+		if ((radius_parse_fqdn(val, nserv) < 0)) {
+			wpa_printf(MSG_ERROR, "FQDN %s parse failed", val);
+			return -1;
+		} else {
+			nserv->resolved = resolve_fqdn(nserv->fqdn_addr, &nserv->addr);
+                        if (!nserv->resolved)
+				wpa_printf(MSG_INFO, "FQDN %s resolve failed", nserv->fqdn_addr);
+                }
+		ret = 0;
+        }
+        nserv->index = server_index++;
 
 	return ret;
 }

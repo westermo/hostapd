@@ -1136,7 +1136,18 @@ radius_change_server(struct radius_client_data *radius,
 				       radius_client_timer, radius, NULL);
 	}
 
-	switch (nserv->addr.af) {
+	/* If FQDN is confiured but it was not resolved when the config file was
+	 * read at startup, try again. */
+	if ((os_strncmp("", nserv->fqdn_addr, sizeof(nserv->fqdn_addr)) != 0) &&
+	    !nserv->resolved) {
+		nserv->resolved = resolve_fqdn(nserv->fqdn_addr, &nserv->addr);
+		if (!nserv->resolved) {
+			wpa_printf(MSG_ERROR, "FQDN %s failed to be resolved", nserv->fqdn_addr);
+			return -1;
+		}
+	}
+
+        switch (nserv->addr.af) {
 	case AF_INET:
 		os_memset(&serv, 0, sizeof(serv));
 		serv.sin_family = AF_INET;

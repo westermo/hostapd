@@ -24,4 +24,5 @@ const char * hostapd_ip_txt(const struct hostapd_ip_addr *addr, char *buf,
 			    size_t buflen);
 int hostapd_parse_ip_addr(const char *txt, struct hostapd_ip_addr *addr);
 
+int resolve_fqdn(const char *fqdn_addr, struct hostapd_ip_addr *addr);
 #endif /* IP_ADDR_H */
