@@ -2691,6 +2691,13 @@ static int hostapd_config_fill(struct hostapd_config *conf,
 				   line, bss->eap_reauth_period);
 			return 1;
 		}
+	} else if (os_strcmp(buf, "eap_active_authentication") == 0) {
+		bss->eap_active_authentication = atoi(pos);
+		if (bss->eap_active_authentication < 0) {
+			wpa_printf(MSG_ERROR, "Line %d: invalid period %d",
+				   line, bss->eap_active_authentication);
+			return 1;
+		}
 	} else if (os_strcmp(buf, "eapol_key_index_workaround") == 0) {
 		bss->eapol_key_index_workaround = atoi(pos);
 #ifdef CONFIG_IAPP

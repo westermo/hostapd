@@ -2236,6 +2236,7 @@ struct wpa_init_params {
 	const char *ifname;
 	const char *driver_params;
 	int use_pae_group_addr;
+	int eap_active_authentication;
 	char **bridge;
 	size_t num_bridge;
 
@@ -6153,6 +6154,9 @@ extern struct wpa_driver_ops wpa_driver_ndis_ops; /* driver_ndis.c */
 #ifdef CONFIG_DRIVER_WIRED
 extern const struct wpa_driver_ops wpa_driver_wired_ops; /* driver_wired.c */
 #endif /* CONFIG_DRIVER_WIRED */
+#ifdef CONFIG_DRIVER_BRIDGE
+extern const struct wpa_driver_ops wpa_driver_bridge_ops; /* driver_bridge.c */
+#endif /* CONFIG_DRIVER_BRIDGE */
 #ifdef CONFIG_DRIVER_MACSEC_QCA
 /* driver_macsec_qca.c */
 extern const struct wpa_driver_ops wpa_driver_macsec_qca_ops;

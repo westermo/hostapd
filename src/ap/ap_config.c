@@ -65,6 +65,7 @@ void hostapd_config_defaults_bss(struct hostapd_bss_config *bss)
 	bss->auth_algs = WPA_AUTH_ALG_OPEN;
 #endif /* CONFIG_WEP */
 	bss->eap_reauth_period = 3600;
+	bss->eap_active_authentication = 0;
 
 	bss->wpa_group_rekey = 600;
 	bss->wpa_gmk_rekey = 86400;
