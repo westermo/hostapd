@@ -15,6 +15,9 @@ CONFIG_DRIVER_HOSTAP=y
 # Driver interface for wired authenticator
 #CONFIG_DRIVER_WIRED=y
 
+# Driver interface for wired authenticator via bridge
+#CONFIG_DRIVER_BRIDGE=y
+
 # Driver interface for drivers using the nl80211 kernel interface
 CONFIG_DRIVER_NL80211=y
 

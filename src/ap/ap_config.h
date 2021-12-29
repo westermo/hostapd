@@ -329,6 +329,7 @@ struct hostapd_bss_config {
 	int broadcast_key_idx_min, broadcast_key_idx_max;
 #endif /* CONFIG_WEP */
 	int eap_reauth_period;
+	int eap_active_authentication;
 	int erp_send_reauth_start;
 	char *erp_domain;
 

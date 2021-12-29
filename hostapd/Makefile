@@ -1274,6 +1274,7 @@ endif
 
 $(DESTDIR)$(BINDIR)/%: %
 	install -D $(<) $(@)
+	install -m 0755 -D hostapd_auth_deauth.sh $(BINDIR)
 
 install: $(addprefix $(DESTDIR)$(BINDIR)/,$(ALL))
 
