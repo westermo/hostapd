@@ -40,11 +40,16 @@
 
 #define NETLINK_ROUTE 0
 #define RTMGRP_LINK 1
+#define RTMGRP_NOTIFY 2
+#define RTMGRP_NEIGH 3
+
 #define RTM_BASE 0x10
 #define RTM_NEWLINK (RTM_BASE + 0)
 #define RTM_DELLINK (RTM_BASE + 1)
 #define RTM_SETLINK (RTM_BASE + 3)
 
+#define RTM_NEWNEIGH 28
+#define RTM_DELNEIGH 29
 #define NLMSG_ALIGNTO 4
 #define NLMSG_ALIGN(len) (((len) + NLMSG_ALIGNTO - 1) & ~(NLMSG_ALIGNTO - 1))
 #define NLMSG_HDRLEN ((int) NLMSG_ALIGN(sizeof(struct nlmsghdr)))

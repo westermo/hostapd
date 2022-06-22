@@ -18,7 +18,18 @@ struct netlink_config {
 			   size_t len);
 	void (*dellink_cb)(void *ctx, struct ifinfomsg *ifi, u8 *buf,
 			   size_t len);
+	void (*newneigh_cb)(void *ctx, struct nlmsghdr *h);
+	void (*delneigh_cb)(void *ctx, struct nlmsghdr *h);
 };
+
+static inline u32 nl_mgrp(u32 group)
+{
+	if (group > 31 ) {
+		fprintf(stderr, "Use setsockopt for this group %d\n", group);
+		return(0);
+	}
+	return group ? (1 << (group - 1)) : 0;
+}
 
 struct netlink_data * netlink_init(struct netlink_config *cfg);
 void netlink_deinit(struct netlink_data *netlink);

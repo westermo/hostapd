@@ -32,6 +32,15 @@ static void netlink_receive_link(struct netlink_data *netlink,
 	   NLMSG_PAYLOAD(h, sizeof(struct ifinfomsg)));
 }
 
+static void netlink_receive_neigh(struct netlink_data *netlink,
+				 void (*cb)(void *ctx, struct nlmsghdr *h),
+				 struct nlmsghdr *h)
+{
+	if (cb == NULL)
+		return;
+	cb(netlink->cfg->ctx, h);
+}
+
 
 static void netlink_receive(int sock, void *eloop_ctx, void *sock_ctx)
 {
@@ -61,8 +70,19 @@ try_again:
 			netlink_receive_link(netlink, netlink->cfg->newlink_cb,
 					     h);
 			break;
+
 		case RTM_DELLINK:
 			netlink_receive_link(netlink, netlink->cfg->dellink_cb,
+					     h);
+			break;
+
+		case RTM_NEWNEIGH:
+			netlink_receive_neigh(netlink, netlink->cfg->newneigh_cb,
+					     h);
+			break;
+
+		case RTM_DELNEIGH:
+			netlink_receive_neigh(netlink, netlink->cfg->delneigh_cb,
 					     h);
 			break;
 		}
@@ -107,7 +127,9 @@ struct netlink_data * netlink_init(struct netlink_config *cfg)
 
 	os_memset(&local, 0, sizeof(local));
 	local.nl_family = AF_NETLINK;
-	local.nl_groups = RTMGRP_LINK;
+	local.nl_groups = 0;
+	local.nl_groups |= nl_mgrp(RTMGRP_LINK);
+	local.nl_groups |= nl_mgrp(RTMGRP_NEIGH);
 	if (bind(netlink->sock, (struct sockaddr *) &local, sizeof(local)) < 0)
 	{
 		wpa_printf(MSG_ERROR, "netlink: Failed to bind netlink "
